@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediVerde Pharmacy — Your Health, Our Priority</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            navy: { 950: '#050d1a', 900: '#0a1628', 800: '#0d2137', 700: '#112d4e' },
+            aqua: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' },
+            verdant: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #050d1a; color: #fff; overflow-x: hidden; }
+
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.2; animation: orbFloat 10s ease-in-out infinite alternate; }
+    .orb-1 { width: 500px; height: 500px; background: #06b6d4; top: -120px; left: -150px; }
+    .orb-2 { width: 400px; height: 400px; background: #10b981; top: 200px; right: -100px; animation-delay: -4s; }
+    .orb-3 { width: 300px; height: 300px; background: #3b82f6; bottom: -80px; left: 30%; animation-delay: -7s; }
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -30px) scale(1.08); }
+      100% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .anim { opacity: 0; animation: fadeInUp 0.8s ease-out forwards; }
+    .d1 { animation-delay: .1s } .d2 { animation-delay: .2s } .d3 { animation-delay: .3s }
+    .d4 { animation-delay: .4s } .d5 { animation-delay: .5s } .d6 { animation-delay: .6s }
+    .d7 { animation-delay: .7s } .d8 { animation-delay: .8s }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .shimmer-text { background: linear-gradient(90deg,#22d3ee,#34d399,#22d3ee,#34d399); background-size: 200% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4s linear infinite; }
+
+    .glow-btn { position: relative; background: linear-gradient(135deg,#06b6d4,#10b981); transition: all .3s ease; }
+    .glow-btn::before { content:''; position:absolute; inset:-2px; background:linear-gradient(135deg,#06b6d4,#10b981); border-radius:inherit; filter:blur(15px); opacity:0; transition:opacity .3s; z-index:-1; }
+    .glow-btn:hover::before { opacity:.5; }
+    .glow-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px -5px rgba(6,182,212,.3); }
+
+    .glass { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(12px); transition:all .4s cubic-bezier(.16,1,.3,1); }
+    .glass:hover { background:rgba(255,255,255,.06); border-color:rgba(34,211,238,.2); transform:translateY(-4px); box-shadow:0 20px 40px -15px rgba(6,182,212,.12); }
+
+    .product-card { transition: all .4s cubic-bezier(.16,1,.3,1); }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 25px 50px -12px rgba(6,182,212,.15); }
+    .product-card:hover .prod-img { transform: scale(1.08); }
+    .prod-img { transition: transform .6s cubic-bezier(.16,1,.3,1); }
+
+    .cat-btn { transition: all .3s ease; }
+    .cat-btn.active { background: linear-gradient(135deg,#06b6d4,#10b981); color: #fff; border-color: transparent; }
+    .cat-btn:not(.active):hover { border-color: rgba(34,211,238,.3); background: rgba(34,211,238,.05); }
+
+    .nav-blur { background:rgba(5,13,26,.75); backdrop-filter:blur(16px); border-bottom:1px solid rgba(255,255,255,.05); }
+
+    .grid-pattern { background-image: linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px); background-size:60px 60px; }
+
+    .noise::after { content:''; position:fixed; inset:0; background:url('https://grainy-gradients.vercel.app/noise.svg'); opacity:.02; pointer-events:none; z-index:9999; }
+
+    @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .marquee-track { animation: marquee 20s linear infinite; }
+
+    .accordion-content { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.16,1,.3,1), padding .3s ease; }
+    .accordion-item.open .accordion-content { max-height:300px; }
+    .accordion-item.open .acc-icon { transform:rotate(45deg); }
+    .acc-icon { transition:transform .3s ease; }
+
+    .toast { transform:translateY(20px); opacity:0; transition:all .4s cubic-bezier(.16,1,.3,1); }
+    .toast.show { transform:translateY(0); opacity:1; }
+
+    .mobile-menu { transform:translateX(100%); transition:transform .4s cubic-bezier(.16,1,.3,1); }
+    .mobile-menu.open { transform:translateX(0); }
+
+    @keyframes cartBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+    .cart-bounce { animation: cartBounce .4s ease; }
+
+    .badge-pulse { animation: badgePulse 2s ease-in-out infinite; }
+    @keyframes badgePulse { 0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,.4)} 50%{box-shadow:0 0 0 6px rgba(6,182,212,0)} }
+
+    ::-webkit-scrollbar { width:6px } ::-webkit-scrollbar-track { background:#050d1a } ::-webkit-scrollbar-thumb { background:linear-gradient(#06b6d4,#10b981); border-radius:3px; }
+
+    .search-modal { opacity:0; pointer-events:none; transition:opacity .3s ease; }
+    .search-modal.open { opacity:1; pointer-events:all; }
+
+    .cart-drawer { transform:translateX(100%); transition:transform .4s cubic-bezier(.16,1,.3,1); }
+    .cart-drawer.open { transform:translateX(0); }
+    .cart-overlay { opacity:0; pointer-events:none; transition:opacity .3s ease; }
+    .cart-overlay.open { opacity:1; pointer-events:all; }
+
+    @keyframes particleFloat { 0%{transform:translateY(0) translateX(0);opacity:0} 10%{opacity:.6} 90%{opacity:.6} 100%{transform:translateY(-800px) translateX(40px);opacity:0} }
+    .particle { position:absolute; width:2px; height:2px; background:rgba(34,211,238,.3); border-radius:50%; animation:particleFloat linear infinite; }
+  </style>
+</head>
+<body class="noise">
+  <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- NAV -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="#" class="flex items-center gap-2 flex-shrink-0 anim">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-aqua-500 to-verdant-500 flex items-center justify-center">
+          <i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i>
+        </div>
+        <span class="text-lg font-semibold tracking-tight hidden sm:inline">MediVerde</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-6 anim d2">
+        <a href="#products" class="text-sm text-neutral-400 hover:text-white transition-colors">Products</a>
+        <a href="#categories" class="text-sm text-neutral-400 hover:text-white transition-colors">Categories</a>
+        <a href="#services" class="text-sm text-neutral-400 hover:text-white transition-colors">Services</a>
+        <a href="#deals" class="text-sm text-neutral-400 hover:text-white transition-colors">Deals</a>
+        <a href="#faq" class="text-sm text-neutral-400 hover:text-white transition-colors">FAQ</a>
+      </div>
+
+      <div class="flex items-center gap-2 anim d3">
+        <button onclick="openSearch()" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Search">
+          <i data-lucide="search" class="w-4 h-4 text-neutral-400"></i>
+        </button>
+        <button onclick="openCart()" class="relative w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Cart">
+          <i data-lucide="shopping-cart" class="w-4 h-4 text-neutral-400"></i>
+          <span id="cartCount" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-aqua-500 to-verdant-500 text-[10px] font-bold flex items-center justify-center hidden badge-pulse">0</span>
+        </button>
+        <button class="glow-btn text-sm font-medium px-4 sm:px-5 py-2.5 rounded-full text-white hidden sm:flex items-center gap-1.5">
+          <i data-lucide="user" class="w-3.5 h-3.5"></i> Sign In
+        </button>
+        <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center" aria-label="Menu">
+          <i data-lucide="menu" class="w-5 h-5 text-neutral-400"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-[60] bg-navy-950/98 backdrop-blur-xl flex flex-col">
+    <div class="px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-aqua-500 to-verdant-500 flex items-center justify-center">
+          <i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i>
+        </div>
+        <span class="text-lg font-semibold tracking-tight">MediVerde</span>
+      </div>
+      <button id="closeMenu" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+        <i data-lucide="x" class="w-5 h-5 text-neutral-400"></i>
+      </button>
+    </div>
+    <div class="flex-1 flex flex-col items-center justify-center gap-7">
+      <a href="#products" class="text-2xl font-light text-neutral-300 hover:text-white transition-colors mob-link">Products</a>
+      <a href="#categories" class="text-2xl font-light text-neutral-300 hover:text-white transition-colors mob-link">Categories</a>
+      <a href="#services" class="text-2xl font-light text-neutral-300 hover:text-white transition-colors mob-link">Services</a>
+      <a href="#deals" class="text-2xl font-light text-neutral-300 hover:text-white transition-colors mob-link">Deals</a>
+      <a href="#faq" class="text-2xl font-light text-neutral-300 hover:text-white transition-colors mob-link">FAQ</a>
+      <button class="glow-btn text-sm font-medium px-8 py-3 rounded-full text-white mt-4">Sign In</button>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL -->
+  <div id="searchModal" class="search-modal fixed inset-0 z-[70] bg-navy-950/90 backdrop-blur-xl flex items-start justify-center pt-24 px-4">
+    <div class="w-full max-w-xl">
+      <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus-within:border-aqua-500/50 transition-colors">
+        <i data-lucide="search" class="w-5 h-5 text-neutral-500 flex-shrink-0"></i>
+        <input id="searchInput" type="text" placeholder="Search medicines, vitamins, supplements..." class="flex-1 bg-transparent text-sm text-white placeholder-neutral-500 focus:outline-none" oninput="handleSearch(this.value)" />
+        <button onclick="closeSearch()" class="text-xs text-neutral-500 border border-white/10 rounded-lg px-2 py-1 hover:bg-white/5">ESC</button>
+      </div>
+      <div id="searchResults" class="mt-3 glass rounded-xl overflow-hidden hidden"></div>
+    </div>
+  </div>
+
+  <!-- CART OVERLAY + DRAWER -->
+  <div id="cartOverlay" class="cart-overlay fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm" onclick="closeCart()"></div>
+  <div id="cartDrawer" class="cart-drawer fixed top-0 right-0 bottom-0 z-[65] w-full max-w-md bg-navy-900/95 backdrop-blur-xl border-l border-white/5 flex flex-col">
+    <div class="px-6 h-16 flex items-center justify-between border-b border-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shopping-cart" class="w-5 h-5 text-aqua-400"></i>
+        <span class="font-semibold">Your Cart</span>
+        <span id="cartDrawerCount" class="text-xs text-neutral-500">(0 items)</span>
+      </div>
+      <button onclick="closeCart()" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+        <i data-lucide="x" class="w-4 h-4 text-neutral-400"></i>
+      </button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4">
+      <div id="emptyCart" class="flex flex-col items-center justify-center h-full text-center">
+        <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+          <i data-lucide="shopping-bag" class="w-7 h-7 text-neutral-600"></i>
+        </div>
+        <p class="text-sm text-neutral-500">Your cart is empty</p>
+        <p class="text-xs text-neutral-600 mt-1">Add items to get started</p>
+      </div>
+    </div>
+    <div id="cartFooter" class="px-6 py-4 border-t border-white/5 hidden">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm text-neutral-400">Subtotal</span>
+        <span id="cartTotal" class="text-lg font-semibold">$0.00</span>
+      </div>
+      <button onclick="showToast('💊 Order placed! Delivery in 30 min.')" class="glow-btn w-full py-3.5 rounded-xl text-sm font-medium text-white flex items-center justify-center gap-2">
+        <i data-lucide="truck" class="w-4 h-4"></i> Checkout — Free Delivery
+      </button>
+      <p class="text-[10px] text-neutral-600 text-center mt-2">Free delivery on orders over $25</p>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="relative min-h-screen flex items-center pt-16 grid-pattern overflow-hidden">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-0">
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div class="text-center lg:text-left">
+          <div class="anim d1 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-verdant-500/20 bg-verdant-500/5 mb-6">
+            <span class="w-2 h-2 rounded-full bg-verdant-400 animate-pulse"></span>
+            <span class="text-xs font-medium text-verdant-400 tracking-wide">Free delivery over $25 — 30 min express</span>
+          </div>
+          <h1 class="anim d2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.08]">
+            Your health,<br/><span class="shimmer-text">delivered</span>
+          </h1>
+          <p class="anim d4 mt-5 text-base sm:text-lg text-neutral-400 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+            Trusted pharmacy with 10,000+ products. Prescription refills, vitamins, supplements & personal care — all at your doorstep.
+          </p>
+          <div class="anim d5 mt-8 flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
+            <button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})" class="glow-btn text-sm font-medium px-8 py-3.5 rounded-full text-white flex items-center gap-2 w-full sm:w-auto justify-center">
+              Shop Now <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            <button onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'})" class="text-sm font-medium px-8 py-3.5 rounded-full text-neutral-300 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all flex items-center gap-2 w-full sm:w-auto justify-center">
+              <i data-lucide="upload" class="w-4 h-4"></i> Upload Prescription
+            </button>
+          </div>
+          <div class="anim d7 mt-10 flex items-center gap-8 justify-center lg:justify-start">
+            <div><span class="text-2xl font-semibold">10K+</span><p class="text-xs text-neutral-500 mt-0.5">Products</p></div>
+            <div class="w-px h-8 bg-white/10"></div>
+            <div><span class="text-2xl font-semibold">50K+</span><p class="text-xs text-neutral-500 mt-0.5">Happy Customers</p></div>
+            <div class="w-px h-8 bg-white/10"></div>
+            <div><span class="text-2xl font-semibold">4.9</span><p class="text-xs text-neutral-500 mt-0.5">★ Rating</p></div>
+          </div>
+        </div>
+        <div class="anim d6 relative flex justify-center">
+          <div class="relative w-full max-w-md">
+            <div class="absolute inset-0 bg-gradient-to-br from-aqua-500/20 to-verdant-500/20 rounded-3xl blur-3xl"></div>
+            <img src="https://picsum.photos/seed/pharmacy-hero-green/600/600.jpg" alt="Pharmacy" class="relative rounded-3xl w-full aspect-square object-cover opacity-70 border border-white/10" />
+            <div class="absolute bottom-4 left-4 right-4 glass rounded-2xl p-4 flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-verdant-500/20 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="clock" class="w-5 h-5 text-verdant-400"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium">Express Delivery</p>
+                <p class="text-xs text-neutral-400">Average delivery: 28 minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUSTED / MARQUEE -->
+  <section class="py-8 border-y border-white/5 overflow-hidden">
+    <div class="flex whitespace-nowrap">
+      <div class="marquee-track flex items-center gap-10 px-6">
+        <span class="text-neutral-600 text-xs font-medium tracking-widest uppercase">Verified by</span>
+        <span class="text-neutral-500 text-base font-semibold">FDA Approved</span>
+        <span class="text-neutral-500 text-base font-semibold">GMP Certified</span>
+        <span class="text-neutral-500 text-base font-semibold">ISO 9001</span>
+        <span class="text-neutral-500 text-base font-semibold">WHO Standards</span>
+        <span class="text-neutral-500 text-base font-semibold">HIPAA Compliant</span>
+        <span class="text-neutral-500 text-base font-semibold">Licensed Pharmacy</span>
+        <span class="text-neutral-500 text-base font-semibold">24/7 Support</span>
+        <span class="text-neutral-600 text-xs font-medium tracking-widest uppercase">Verified by</span>
+        <span class="text-neutral-500 text-base font-semibold">FDA Approved</span>
+        <span class="text-neutral-500 text-base font-semibold">GMP Certified</span>
+        <span class="text-neutral-500 text-base font-semibold">ISO 9001</span>
+        <span class="text-neutral-500 text-base font-semibold">WHO Standards</span>
+        <span class="text-neutral-500 text-base font-semibold">HIPAA Compliant</span>
+        <span class="text-neutral-500 text-base font-semibold">Licensed Pharmacy</span>
+        <span class="text-neutral-500 text-base font-semibold">24/7 Support</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="categories" class="py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12 reveal">
+        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-aqua-500/20 bg-aqua-500/5 text-xs font-medium text-aqua-400 tracking-wide mb-4">
+          <i data-lucide="grid-3x3" class="w-3.5 h-3.5"></i> Categories
+        </span>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">Browse by category</h2>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal">
+        <button onclick="filterProducts('all')" class="cat-btn active glass rounded-2xl p-4 sm:p-6 flex flex-col items-center gap-3 text-center border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-aqua-500/10 flex items-center justify-center"><i data-lucide="pill" class="w-6 h-6 text-aqua-400"></i></div>
+          <span class="text-xs sm:text-sm font-medium">All</span>
+        </button>
+        <button onclick="filterProducts('vitamins')" class="cat-btn glass rounded-2xl p-4 sm:p-6 flex flex-col items-center gap-3 text-center border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-verdant-500/10 flex items-center justify-center"><i data-lucide="apple" class="w-6 h-6 text-verdant-400"></i></div>
+          <span class="text-xs sm:text-sm font-medium text-neutral-300">Vitamins</span>
+        </button>
+        <button onclick="filterProducts('pain')" class="cat-btn glass rounded-2xl p-4 sm:p-6 flex flex-col items-center gap-3 text-center border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center"><i data-lucide="thermometer" class="w-6 h-6 text-blue-400"></i></div>
+          <span class="text-xs sm:text-sm font-medium text-neutral-300">Pain Relief</span>
+        </button>
+        <button onclick="filterProducts('skincare')" class="cat-btn glass rounded-2xl p-4 sm:p-6 flex flex-col items-center gap-3 text-center border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center"><i data-lucide="sparkles" class="w-6 h-6 text-pink-400"></i></div>
+          <span class="text-xs sm:text-sm font-medium text-neutral-300">Skincare</span>
+        </button>
+        <button onclick="filterProducts('cold')" class="cat-btn glass rounded-2xl p-4 sm:p-6 flex flex-col items-center gap-3 text-center border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center"><i data-lucide="wind" class="w-6 h-6 text-teal-400"></i></div>
+          <span class="text-xs sm:text-sm font-medium text-neutral-300">Cold & Flu</span>
+        </button>
+        <button onclick="filterProducts('devices')" class="cat-btn glass rounded-2xl p-4 sm:p-6 flex flex-col items-center gap-3 text-center border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center"><i data-lucide="activity" class="w-6 h-6 text-indigo-400"></i></div>
+          <span class="text-xs sm:text-sm font-medium text-neutral-300">Devices</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" class="py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 reveal">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">Featured products</h2>
+          <p class="text-sm text-neutral-500 mt-1">Hand-picked health essentials for you</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="sortProducts('low')" class="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-neutral-400 hover:bg-white/5 transition-colors">Low → High</button>
+          <button onclick="sortProducts('high')" class="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-neutral-400 hover:bg-white/5 transition-colors">High → Low</button>
+        </div>
+      </div>
+      <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        <!-- Products injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- DEALS BANNER -->
+  <section id="deals" class="py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="reveal relative rounded-3xl overflow-hidden">
+        <img src="https://picsum.photos/seed/pharmacy-deal-blue/1400/400.jpg" alt="Deals" class="w-full h-48 sm:h-64 md:h-80 object-cover opacity-40" />
+        <div class="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/80 to-transparent"></div>
+        <div class="absolute inset-0 flex items-center px-6 sm:px-12">
+          <div class="max-w-lg">
+            <span class="inline-block px-3 py-1 rounded-full bg-verdant-500/20 text-verdant-400 text-xs font-medium mb-4">Limited Time</span>
+            <h2 class="text-2xl sm:text-4xl font-semibold tracking-tight mb-2">30% Off All Vitamins</h2>
+            <p class="text-sm text-neutral-400 mb-6">Boost your immunity this season. Use code <span class="text-aqua-400 font-mono font-semibold">HEALTH30</span> at checkout.</p>
+            <button onclick="filterProducts('vitamins');document.getElementById('products').scrollIntoView({behavior:'smooth'})" class="glow-btn text-sm font-medium px-6 py-3 rounded-full text-white">Shop Vitamins</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12 reveal">
+        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-verdant-500/20 bg-verdant-500/5 text-xs font-medium text-verdant-400 tracking-wide mb-4">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Our Services
+        </span>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">Why choose MediVerde</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div class="glass rounded-2xl p-6 sm:p-8 reveal">
+          <div class="w-12 h-12 rounded-xl bg-aqua-500/10 flex items-center justify-center mb-5"><i data-lucide="truck" class="w-6 h-6 text-aqua-400"></i></div>
+          <h3 class="text-base font-semibold mb-2">30-Min Delivery</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">Lightning-fast delivery straight to your door. Free on orders over $25.</p>
+        </div>
+        <div class="glass rounded-2xl p-6 sm:p-8 reveal">
+          <div class="w-12 h-12 rounded-xl bg-verdant-500/10 flex items-center justify-center mb-5"><i data-lucide="file-text" class="w-6 h-6 text-verdant-400"></i></div>
+          <h3 class="text-base font-semibold mb-2">Rx Refills</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">Upload your prescription and we'll handle the rest. Auto-refills available.</p>
+        </div>
+        <div class="glass rounded-2xl p-6 sm:p-8 reveal">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5"><i data-lucide="stethoscope" class="w-6 h-6 text-blue-400"></i></div>
+          <h3 class="text-base font-semibold mb-2">Online Consult</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">Speak with licensed pharmacists 24/7 via chat, call, or video.</p>
+        </div>
+        <div class="glass rounded-2xl p-6 sm:p-8 reveal">
+          <div class="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center mb-5"><i data-lucide="badge-check" class="w-6 h-6 text-teal-400"></i></div>
+          <h3 class="text-base font-semibold mb-2">100% Authentic</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">Every product sourced directly from manufacturers. No fakes, ever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPLOAD PRESCRIPTION -->
+  <section id="upload" class="py-16 md:py-24">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <div class="glass rounded-3xl p-6 sm:p-10 text-center reveal">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-aqua-500/20 to-verdant-500/20 flex items-center justify-center mx-auto mb-6">
+          <i data-lucide="upload" class="w-7 h-7 text-aqua-400"></i>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight mb-2">Upload Prescription</h2>
+        <p class="text-sm text-neutral-400 mb-8 max-w-md mx-auto">Take a photo or upload your prescription. Our pharmacist will verify and prepare your order.</p>
+        <div id="dropZone" class="border-2 border-dashed border-white/10 rounded-2xl p-8 sm:p-12 hover:border-aqua-500/30 transition-colors cursor-pointer" onclick="document.getElementById('fileInput').click()">
+          <i data-lucide="camera" class="w-10 h-10 text-neutral-600 mx-auto mb-3"></i>
+          <p class="text-sm text-neutral-400 mb-1">Drag & drop or <span class="text-aqua-400 font-medium">browse files</span></p>
+          <p class="text-xs text-neutral-600">JPG, PNG, PDF — Max 10MB</p>
+          <input id="fileInput" type="file" accept="image/*,.pdf" class="hidden" onchange="handleUpload(this)" />
+        </div>
+        <div id="uploadSuccess" class="hidden mt-4 flex items-center justify-center gap-2 text-sm text-verdant-400">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span>Prescription uploaded successfully! We'll contact you shortly.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">What our customers <span class="bg-gradient-to-r from-aqua-400 to-verdant-400 bg-clip-text text-transparent">say</span></h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div class="glass rounded-2xl p-6 reveal">
+          <div class="flex gap-0.5 mb-3"><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i></div>
+          <p class="text-sm text-neutral-300 leading-relaxed mb-5">"Ordered my vitamins at midnight and they arrived by 12:30. Absolutely incredible service. Never going back to the store."</p>
+          <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-aqua-500 to-blue-500 flex items-center justify-center text-xs font-bold">JD</div><div><p class="text-sm font-medium">Jessica D.</p><p class="text-xs text-neutral-500">Verified Buyer</p></div></div>
+        </div>
+        <div class="glass rounded-2xl p-6 reveal">
+          <div class="flex gap-0.5 mb-3"><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i></div>
+          <p class="text-sm text-neutral-300 leading-relaxed mb-5">"The online pharmacist helped me understand my medication interactions. So much better than trying to Google everything."</p>
+          <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-verdant-500 to-teal-500 flex items-center justify-center text-xs font-bold">RK</div><div><p class="text-sm font-medium">Robert K.</p><p class="text-xs text-neutral-500">Verified Buyer</p></div></div>
+        </div>
+        <div class="glass rounded-2xl p-6 reveal sm:col-span-2 lg:col-span-1">
+          <div class="flex gap-0.5 mb-3"><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i></div>
+          <p class="text-sm text-neutral-300 leading-relaxed mb-5">"Prescription upload was seamless. Got a call within 15 minutes confirming everything. This is how healthcare should work."</p>
+          <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-xs font-bold">AM</div><div><p class="text-sm font-medium">Aisha M.</p><p class="text-xs text-neutral-500">Verified Buyer</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 md:py-28">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">Common <span class="bg-gradient-to-r from-aqua-400 to-blue-400 bg-clip-text text-transparent">questions</span></h2>
+      </div>
+      <div class="space-y-3 reveal" id="faqContainer">
+        <div class="accordion-item glass rounded-xl cursor-pointer" onclick="toggleAccordion(this)">
+          <div class="flex items-center justify-between p-5"><span class="text-sm font-medium">How fast is delivery?</span><i data-lucide="plus" class="w-4 h-4 text-neutral-400 acc-icon flex-shrink-0"></i></div>
+          <div class="accordion-content px-5"><p class="text-sm text-neutral-400 leading-relaxed pb-5">Average delivery time is 28 minutes for in-stock items. Orders placed after 10 PM are delivered next morning. Free delivery on orders over $25.</p></div>
+        </div>
+        <div class="accordion-item glass rounded-xl cursor-pointer" onclick="toggleAccordion(this)">
+          <div class="flex items-center justify-between p-5"><span class="text-sm font-medium">Do I need a prescription for all medicines?</span><i data-lucide="plus" class="w-4 h-4 text-neutral-400 acc-icon flex-shrink-0"></i></div>
+          <div class="accordion-content px-5"><p class="text-sm text-neutral-400 leading-relaxed pb-5">OTC products like vitamins, pain relievers, and skincare don't require a prescription. Prescription medications need a valid Rx from a licensed doctor, which you can upload on our platform.</p></div>
+        </div>
+        <div class="accordion-item glass rounded-xl cursor-pointer" onclick="toggleAccordion(this)">
+          <div class="flex items-center justify-between p-5"><span class="text-sm font-medium">Are all products genuine?</span><i data-lucide="plus" class="w-4 h-4 text-neutral-400 acc-icon flex-shrink-0"></i></div>
+          <div class="accordion-content px-5"><p class="text-sm text-neutral-400 leading-relaxed pb-5">100%. Every product is sourced directly from manufacturers or authorized distributors. We're FDA licensed and GMP certified with full batch tracking.</p></div>
+        </div>
+        <div class="accordion-item glass rounded-xl cursor-pointer" onclick="toggleAccordion(this)">
+          <div class="flex items-center justify-between p-5"><span class="text-sm font-medium">Can I return products?</span><i data-lucide="plus" class="w-4 h-4 text-neutral-400 acc-icon flex-shrink-0"></i></div>
+          <div class="accordion-content px-5"><p class="text-sm text-neutral-400 leading-relaxed pb-5">Unopened items can be returned within 7 days. For damaged or incorrect items, we offer immediate replacement or full refund. Prescription medicines cannot be returned due to safety regulations.</p></div>
+        </div>
+        <div class="accordion-item glass rounded-xl cursor-pointer" onclick="toggleAccordion(this)">
+          <div class="flex items-center justify-between p-5"><span class="text-sm font-medium">How does online consultation work?</span><i data-lucide="plus" class="w-4 h-4 text-neutral-400 acc-icon flex-shrink-0"></i></div>
+          <div class="accordion-content px-5"><p class="text-sm text-neutral-400 leading-relaxed pb-5">Book a session with a licensed pharmacist via chat, call, or video — available 24/7. They can help with medication queries, interactions, dosage guidance, and OTC recommendations.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 md:py-28 relative overflow-hidden">
+    <div class="absolute inset-0"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-aqua-500/10 to-verdant-500/10 blur-[120px]"></div></div>
+    <div class="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center reveal">
+      <h2 class="text-3xl md:text-4xl font-semibold tracking-tight mb-4">Stay healthy, stay informed</h2>
+      <p class="text-neutral-400 mb-8">Get health tips, exclusive deals, and new product alerts delivered weekly.</p>
+      <div class="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
+        <input id="emailInput" type="email" placeholder="Enter your email" class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-aqua-500/50 focus:ring-1 focus:ring-aqua-500/30 transition-all" />
+        <button onclick="handleNewsletter()" class="glow-btn text-sm font-medium px-6 py-3.5 rounded-xl text-white whitespace-nowrap flex items-center gap-2">
+          Subscribe <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <p class="text-[10px] text-neutral-600 mt-3">No spam. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="col-span-2">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-aqua-500 to-verdant-500 flex items-center justify-center"><i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i></div>
+            <span class="text-lg font-semibold tracking-tight">MediVerde</span>
+          </div>
+          <p class="text-sm text-neutral-500 leading-relaxed max-w-xs mb-5">Your trusted online pharmacy. Licensed, verified, and delivering health to your doorstep since 2020.</p>
+          <div class="flex gap-2.5">
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"><i data-lucide="facebook" class="w-4 h-4 text-neutral-400"></i></a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-neutral-400"></i></a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"><i data-lucide="twitter" class="w-4 h-4 text-neutral-400"></i></a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"><i data-lucide="youtube" class="w-4 h-4 text-neutral-400"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-sm font-medium mb-4">Shop</h4>
+          <ul class="space-y-2.5"><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Vitamins</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Pain Relief</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Skincare</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Devices</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Baby Care</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-medium mb-4">Services</h4>
+          <ul class="space-y-2.5"><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Rx Upload</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Consultation</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Auto Refill</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Lab Tests</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-medium mb-4">Company</h4>
+          <ul class="space-y-2.5"><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">About Us</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Licenses</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Privacy Policy</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Terms</a></li><li><a href="#" class="text-sm text-neutral-500 hover:text-white transition-colors">Contact</a></li></ul>
+        </div>
+      </div>
+      <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-neutral-600">© 2025 MediVerde Pharmacy. License #PH-2020-4521. All rights reserved.</p>
+        <p class="text-xs text-neutral-600">Made with <span class="text-verdant-400">♥</span> for your health</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast fixed bottom-5 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-6 z-[100] px-5 py-3 rounded-xl bg-navy-800 border border-white/10 backdrop-blur-xl shadow-2xl flex items-center gap-3 max-w-sm">
+    <span id="toastMsg" class="text-sm text-neutral-200"></span>
+  </div>
+
+  <script>
+    // ===== PRODUCT DATA =====
+    const products = [
+      { id:1, name:"Vitamin D3 5000 IU", desc:"Immune & bone support, 120 softgels", price:14.99, oldPrice:19.99, cat:"vitamins", img:"pharmacy-vitd", badge:"Best Seller", badgeColor:"aqua" },
+      { id:2, name:"Ibuprofen 400mg", desc:"Fast pain & fever relief, 50 tablets", price:6.49, oldPrice:null, cat:"pain", img:"pharmacy-ibup", badge:null },
+      { id:3, name:"Hyaluronic Acid Serum", desc:"Deep hydration face serum, 30ml", price:24.99, oldPrice:34.99, cat:"skincare", img:"pharmacy-serum", badge:"29% Off", badgeColor:"verdant" },
+      { id:4, name:"Cold & Flu Max", desc:"Multi-symptom relief, 24 capsules", price:11.99, oldPrice:null, cat:"cold", img:"pharmacy-cold", badge:null },
+      { id:5, name:"Digital Thermometer", desc:"Instant read, fever alert, flexible tip", price:12.99, oldPrice:17.99, cat:"devices", img:"pharmacy-thermo", badge:"New", badgeColor:"blue" },
+      { id:6, name:"Omega-3 Fish Oil", desc:"Heart & brain health, 180 softgels", price:18.49, oldPrice:22.99, cat:"vitamins", img:"pharmacy-omega", badge:null },
+      { id:7, name:"Acetaminophen 500mg", desc:"Gentle pain relief, 100 tablets", price:5.99, oldPrice:null, cat:"pain", img:"pharmacy-acet", badge:"Essential", badgeColor:"teal" },
+      { id:8, name:"Retinol Night Cream", desc:"Anti-aging moisturizer, 50ml", price:29.99, oldPrice:39.99, cat:"skincare", img:"pharmacy-retinol", badge:null },
+      { id:9, name:"Nasal Decongestant Spray", desc:"12-hour relief, 15ml", price:8.99, oldPrice:null, cat:"cold", img:"pharmacy-nasal", badge:null },
+      { id:10, name:"Blood Pressure Monitor", desc:"Digital wrist cuff, memory storage", price:39.99, oldPrice:54.99, cat:"devices", img:"pharmacy-bp", badge:"27% Off", badgeColor:"verdant" },
+      { id:11, name:"Vitamin C 1000mg", desc:"Immune booster, 120 tablets", price:9.99, oldPrice:13.99, cat:"vitamins", img:"pharmacy-vitc", badge:null },
+      { id:12, name:"SPF 50 Sunscreen", desc:"Broad spectrum, water resistant, 100ml", price:16.99, oldPrice:null, cat:"skincare", img:"pharmacy-spf", badge:"Dermatologist Pick", badgeColor:"aqua" },
+    ];
+
+    let cart = [];
+    let currentFilter = 'all';
+    let currentSort = null;
+
+    // ===== RENDER PRODUCTS =====
+    function renderProducts(list) {
+      const grid = document.getElementById('productGrid');
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-16"><p class="text-neutral-500">No products found in this category.</p></div>';
+        return;
+      }
+      grid.innerHTML = list.map(p => `
+        <div class="product-card glass rounded-2xl overflow-hidden" data-cat="${p.cat}">
+          <div class="relative aspect-square overflow-hidden bg-navy-800">
+            <img src="https://picsum.photos/seed/${p.img}/400/400.jpg" alt="${p.name}" class="prod-img w-full h-full object-cover opacity-70" loading="lazy"/>
+            ${p.badge ? `<span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-${p.badgeColor}-500/20 text-${p.badgeColor}-400 text-[10px] font-semibold">${p.badge}</span>` : ''}
+            <button onclick="addToCart(${p.id})" class="absolute bottom-3 right-3 w-10 h-10 rounded-xl bg-gradient-to-br from-aqua-500 to-verdant-500 flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
+              <i data-lucide="plus" class="w-5 h-5 text-white"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-neutral-500 mb-1 capitalize">${p.cat === 'cold' ? 'Cold & Flu' : p.cat}</p>
+            <h3 class="text-sm font-semibold leading-snug mb-1 line-clamp-2">${p.name}</h3>
+            <p class="text-xs text-neutral-500 mb-3 line-clamp-1">${p.desc}</p>
+            <div class="flex items-center gap-2">
+              <span class="text-base font-bold text-white">$${p.price.toFixed(2)}</span>
+              ${p.oldPrice ? `<span class="text-xs text-neutral-600 line-through">$${p.oldPrice.toFixed(2)}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // ===== FILTER =====
+    function filterProducts(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      let list = cat === 'all' ? [...products] : products.filter(p => p.cat === cat);
+      if (currentSort) sortList(list, currentSort);
+      renderProducts(list);
+    }
+
+    // ===== SORT =====
+    function sortProducts(dir) {
+      currentSort = dir;
+      let list = currentFilter === 'all' ? [...products] : products.filter(p => p.cat === currentFilter);
+      sortList(list, dir);
+      renderProducts(list);
+    }
+    function sortList(list, dir) { list.sort((a,b) => dir === 'low' ? a.price - b.price : b.price - a.price); }
+
+    // ===== CART =====
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      const existing = cart.find(x => x.id === id);
+      if (existing) { existing.qty++; } else { cart.push({...p, qty:1}); }
+      updateCartUI();
+      showToast(`✓ ${p.name} added to cart`);
+      const badge = document.getElementById('cartCount');
+      badge.classList.remove('cart-bounce');
+      void badge.offsetWidth;
+      badge.classList.add('cart-bounce');
+    }
+    function removeFromCart(id) {
+      cart = cart.filter(x => x.id !== id);
+      updateCartUI();
+    }
+    function changeQty(id, delta) {
+      const item = cart.find(x => x.id === id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) { removeFromCart(id); return; }
+      updateCartUI();
+    }
+    function updateCartUI() {
+      const count = cart.reduce((s,i) => s + i.qty, 0);
+      const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+      const badge = document.getElementById('cartCount');
+      badge.textContent = count;
+      badge.classList.toggle('hidden', count === 0);
+      document.getElementById('cartDrawerCount').textContent = `(${count} item${count !== 1 ? 's' : ''})`;
+      document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+      document.getElementById('cartFooter').classList.toggle('hidden', count === 0);
+      document.getElementById('emptyCart').classList.toggle('hidden', count > 0);
+      const container = document.getElementById('cartItems');
+      const existingItems = container.querySelectorAll('.cart-item');
+      existingItems.forEach(el => el.remove());
+      cart.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'cart-item flex gap-3 py-3 border-b border-white/5';
+        div.innerHTML = `
+          <img src="https://picsum.photos/seed/${item.img}/100/100.jpg" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover opacity-70 flex-shrink-0"/>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">${item.name}</p>
+            <p class="text-xs text-neutral-500">$${item.price.toFixed(2)} each</p>
+            <div class="flex items-center gap-2 mt-1.5">
+              <button onclick="changeQty(${item.id},-1)" class="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors text-xs">−</button>
+              <span class="text-xs font-medium w-4 text-center">${item.qty}</span>
+              <button onclick="changeQty(${item.id},1)" class="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors text-xs">+</button>
+            </div>
+          </div>
+          <div class="flex flex-col items-end justify-between">
+            <button onclick="removeFromCart(${item.id})" class="text-neutral-600 hover:text-red-400 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <span class="text-sm font-semibold">$${(item.price * item.qty).toFixed(2)}</span>
+          </div>
+        `;
+        container.insertBefore(div, document.getElementById('emptyCart'));
+      });
+      lucide.createIcons();
+    }
+
+    function openCart() {
+      document.getElementById('cartDrawer').classList.add('open');
+      document.getElementById('cartOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCart() {
+      document.getElementById('cartDrawer').classList.remove('open');
+      document.getElementById('cartOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ===== SEARCH =====
+    function openSearch() {
+      document.getElementById('searchModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('searchInput').focus(), 100);
+    }
+    function closeSearch() {
+      document.getElementById('searchModal').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchResults').classList.add('hidden');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSearch(); closeCart(); } });
+
+    function handleSearch(val) {
+      const results = document.getElementById('searchResults');
+      if (val.length < 2) { results.classList.add('hidden'); return; }
+      const matches = products.filter(p => p.name.toLowerCase().includes(val.toLowerCase()) || p.desc.toLowerCase().includes(val.toLowerCase()));
+      if (matches.length === 0) {
+        results.innerHTML = '<div class="p-4 text-sm text-neutral-500 text-center">No products found</div>';
+      } else {
+        results.innerHTML = matches.map(p => `
+          <button onclick="addToCart(${p.id});closeSearch()" class="w-full flex items-center gap-3 p-3 hover:bg-white/5 transition-colors text-left">
+            <img src="https://picsum.photos/seed/${p.img}/60/60.jpg" class="w-10 h-10 rounded-lg object-cover opacity-70 flex-shrink-0"/>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium truncate">${p.name}</p>
+              <p class="text-xs text-neutral-500">$${p.price.toFixed(2)}</p>
+            </div>
+            <i data-lucide="plus-circle" class="w-4 h-4 text-verdant-400 flex-shrink-0"></i>
+          </button>
+        `).join('');
+        lucide.createIcons();
+      }
+      results.classList.remove('hidden');
+    }
+
+    // ===== UPLOAD =====
+    function handleUpload(input) {
+      if (input.files.length > 0) {
+        document.getElementById('uploadSuccess').classList.remove('hidden');
+        showToast('📄 Prescription received! Our pharmacist will review it.');
+        lucide.createIcons();
+      }
+    }
+
+    // ===== ACCORDION =====
+    function toggleAccordion(item) {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    // ===== TOAST =====
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ===== NEWSLETTER =====
+    function handleNewsletter() {
+      const email = document.getElementById('emailInput').value;
+      if (!email || !email.includes('@')) { showToast('⚠️ Please enter a valid email.'); return; }
+      showToast('🌿 Subscribed! Check your inbox for a welcome offer.');
+      document.getElementById('emailInput').value = '';
+    }
+
+    // ===== MOBILE MENU =====
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('closeMenu').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    document.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.body.style.overflow = '';
+    }));
+
+    // ===== SCROLL REVEAL =====
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 60); obs.unobserve(e.target); } });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // ===== PARTICLES =====
+    const pCont = document.getElementById('particles');
+    function mkP() {
+      const p = document.createElement('div'); p.classList.add('particle');
+      p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%';
+      p.style.animationDuration = (8+Math.random()*10)+'s';
+      p.style.animationDelay = Math.random()*5+'s';
+      const s = 1+Math.random()*2; p.style.width=s+'px'; p.style.height=s+'px';
+      p.style.background = ['rgba(34,211,238,.25)','rgba(52,211,153,.25)','rgba(59,130,246,.15)'][Math.floor(Math.random()*3)];
+      pCont.appendChild(p); setTimeout(() => p.remove(), 20000);
+    }
+    setInterval(mkP, 500); for(let i=0;i<10;i++) setTimeout(mkP,i*300);
+
+    // ===== INIT =====
+    renderProducts(products);
+    lucide.createIcons();
+  </script>
+</body>
+</html>
